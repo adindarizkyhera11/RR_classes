@@ -1,0 +1,95 @@
+---
+title: <center><span style="font-size:125%; font-family:Comic Sains; font-style:normal">Exercises RMD class 1</span></center>
+subtitle: <center><span style="font-size:125%;font-family:Comic Sains; font-style:normal, font-variant:small-caps">Reproducible Class</span></center>
+author: <center><span style="font-size:125%; font-family:Comic Sains; font-style:normal"> Adinda </span></center>
+date: <center> `r format(Sys.time(), '%d %B, %Y')`</center>
+output: 
+  html_document:
+    self_contained: true
+    lib_dir: libs
+    theme: spacelab
+    highlight: tango
+    toc: true
+    toc_float: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message=FALSE, warning = FALSE)
+```
+
+```{r}
+require(reshape)
+library(dplyr)
+library(ggplot2)
+```
+
+---
+
+# Brief Description
+
+<span style="font-size:125%; font-family:Comic Sains; font-style:normal"> Suits is an American television drama series created by Aaron Korsh, which premiered on June 23, 2011 on the USA Network. It revolves around Mike Ross (Patrick J. Adams), who begins working as a law associate for Harvey Specter (Gabriel Macht), despite never attending law school. The show focuses on Harvey and Mike managing to close cases, while maintaining Mike's secret. The series was renewed for an eighth season on January 30, 2018.[1] In January 2019, the series was renewed for a ninth and final season which premiered on July 17, 2019.[2] During the course of the series, 134 episodes of Suits aired over nine seasons, between June 23, 2011, and September 25, 2019.</span>
+
+---
+
+---
+
+# Logo of the film
+<center><img alt="SuitsSeasn1DVDCover.jpg" src="//upload.wikimedia.org/wikipedia/en/2/2c/SuitsSeasn1DVDCover.jpg" decoding="async" width="200" height="310" data-file-width="200" data-file-height="310"></center>
+
+---
+	
+# Summary
+Here is the summary of the season 1
+```{r}
+load("C:/Users/Adinda Rizky Herawat/Dropbox/Spring Semester 2020_2021/5. Reproducible Research/RR_classes/april_05_09/Data/season_1.RData")
+
+summary(season_data)
+```
+
+
+# Graphs {.tabset}
+
+## Episodes
+```{r, fig.align="center", out.width="75%", fig.cap="Graph of the Viewers Based on Number of Year"}
+# Cleansing 
+season_data <- transform(season_data, date=colsplit(premiere_date, split="\\(", names=c("Date","Year")))
+
+season_data$date.Date <- NULL
+season_data <- season_data %>% mutate(date.Year= as.character(gsub(")","",date.Year)))
+season_data$date.Year <- as.Date(as.character(season_data$date.Year), format = "%Y-%m-%d")
+
+# Visualization
+ggplot(data=season_data, aes(x= as.Date(date.Year), y=viewers)) +
+  geom_point() +
+  geom_line() +
+  theme_minimal() + 
+  labs(x="Date", y="Number of Viewers") +
+  ggtitle('Viewers Season 1 in 2011') +
+  theme(legend.position = "right",
+      plot.title = element_text(hjust=0.5, face="bold"),
+      plot.subtitle = element_text(hjust=0.5, face="bold"),
+      panel.grid.major = element_line(colour = "white"), 
+      panel.grid.major.x = element_line(size=1, colour="white"), 
+      panel.grid.minor.y = element_line(size = 1, colour = "white"),
+      panel.background = element_rect(fill = "white", colour = "white")) 
+```
+
+## Season
+```{r, fig.align='center', out.width="75%" ,fig.cap = "Graph of the Viewers Based on Number of Season"}
+season_data$no_season <- factor(season_data$no_season, 
+                                levels = c(1,2,3,4,5,6,7,8,9,10), ordered = TRUE)
+
+ggplot(data=season_data, aes(x= no_season, y=viewers)) +
+  geom_bar(stat="identity") +
+  theme_minimal() + 
+  labs(x="Episode", y="Number of Viewers") +
+  ggtitle('Viewers Season 1 in 2011') +
+  theme(legend.position = "right",
+      plot.title = element_text(hjust=0.5, face="bold"),
+      plot.subtitle = element_text(hjust=0.5, face="bold"),
+      panel.grid.major = element_line(colour = "white"), 
+      panel.grid.major.x = element_line(size=1, colour="white"), 
+      panel.grid.minor.y = element_line(size = 1, colour = "white"),
+      panel.background = element_rect(fill = "white", colour = "white")) 
+```
+
